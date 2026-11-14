@@ -1,0 +1,34 @@
+# Cloudflare Worker that receives the enquiry form and sends the e-mail.
+# No secrets in this file. Set them with `wrangler secret put <NAME>`.
+name = "dragon-enquiry"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Exact browser origins allowed to call the Worker (comma separated, no trailing slash).
+ALLOWED_ORIGINS = "https://REPLACE-WITH-CUSTOMER-SUBDOMAIN"
+# Where enquiries are delivered.
+MAIL_TO = "contact@blueark.co.in"
+# MAIL_CC = ""            # e.g. the client's enquiry mailbox, if agreed
+# Sender must be on a domain verified with the mail provider.
+MAIL_FROM = "Dragon TechSolutions Website <no-reply@REPLACE-VERIFIED-DOMAIN>"
+MAIL_PROVIDER = "resend"   # resend | webhook
+# TURNSTILE_HOSTNAMES = "REPLACE-WITH-CUSTOMER-SUBDOMAIN"
+DAILY_CAP = "200"
+PER_IP_HOURLY = "5"
+
+# Optional abuse protection (create in the Cloudflare dashboard, then uncomment):
+# [[kv_namespaces]]
+# binding = "RATE_KV"
+# id = "<kv-namespace-id>"
+#
+# [[unsafe.bindings]]
+# name = "RATE_LIMITER"
+# type = "ratelimit"
+# namespace_id = "1001"
+# simple = { limit = 5, period = 60 }
+
+# Secrets (never commit):
+#   wrangler secret put TURNSTILE_SECRET
+#   wrangler secret put RESEND_API_KEY        (MAIL_PROVIDER=resend)
+#   wrangler secret put MAIL_WEBHOOK_TOKEN    (MAIL_PROVIDER=webhook; also set MAIL_WEBHOOK_URL var)

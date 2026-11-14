@@ -1,0 +1,74 @@
+name: Test and deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run check:site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      # Public values, set in: Settings > Secrets and variables > Actions > Variables
+      SITE_URL: ${{ vars.SITE_URL }}                      # e.g. https://landing.customer-domain.com (no trailing slash)
+      FORM_ENDPOINT: ${{ vars.FORM_ENDPOINT }}            # e.g. https://dragon-enquiry.<acct>.workers.dev/api/enquiry
+      TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}  # Turnstile *site* key (public by design)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require production settings
+        run: |
+          for v in SITE_URL FORM_ENDPOINT TURNSTILE_SITE_KEY; do
+            if [ -z "${!v}" ]; then echo "::error::Repository variable $v is not set"; exit 1; fi
+          done
+
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp -r index.html 404.html robots.txt sitemap.xml assets _site/
+          [ -f CNAME ] && cp CNAME _site/ || true
+          touch _site/.nojekyll
+          sed -i.bak "s|__SITE_URL__|${SITE_URL%/}|g" _site/index.html _site/robots.txt _site/sitemap.xml
+          # Production runtime config (public values only)
+          cat > _site/assets/js/config.js <<JS
+          document.documentElement.classList.add('js');
+          window.DRAGON_CONFIG = { formEndpoint: '${FORM_ENDPOINT}', turnstileSiteKey: '${TURNSTILE_SITE_KEY}' };
+          JS
+          # Tighten the CSP: connect only to this site and the enquiry Worker
+          FORM_ORIGIN=$(echo "$FORM_ENDPOINT" | sed -E 's|^(https?://[^/]+).*|\1|')
+          sed -i.bak -E "s|connect-src [^;]*;|connect-src 'self' ${FORM_ORIGIN};|" _site/index.html
+          find _site -name '*.bak' -delete
+          grep -q "localhost" _site/index.html && { echo "::error::localhost left in CSP"; exit 1; } || true
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
