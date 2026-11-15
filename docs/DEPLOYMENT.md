@@ -2,6 +2,14 @@
 
 Everything below uses free tiers. Do the steps in order. Items marked **(customer)** are done by Dragon TechSolutions' IT/DNS owner.
 
+## Phase 1 – first review deploy (no Cloudflare, no domain needed)
+
+1. Push to a **public** GitHub repo and set **Settings → Pages → Source: GitHub Actions**.
+2. The workflow deploys to `https://<github-username>.github.io/<repo>/` in *review mode*: the full page works and the
+   enquiry form shows a "call or email us" message. Add the repository variables below only when you want the form live.
+
+See also [todos.md](todos.md) for the current status checklist.
+
 ## 0. Decisions needed first
 
 | Decision | Default in this repo |

@@ -35,38 +35,49 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      # Public values, set in: Settings > Secrets and variables > Actions > Variables
+      # Public values, set in: Settings > Secrets and variables > Actions > Variables.
+      # All three are OPTIONAL for a first review deploy: without them the site is published
+      # on its github.io address and the form shows a "please call or email us" message.
       SITE_URL: ${{ vars.SITE_URL }}                      # e.g. https://landing.customer-domain.com (no trailing slash)
       FORM_ENDPOINT: ${{ vars.FORM_ENDPOINT }}            # e.g. https://dragon-enquiry.<acct>.workers.dev/api/enquiry
       TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}  # Turnstile *site* key (public by design)
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        id: pages
 
-      - name: Require production settings
+      - name: Check settings
         run: |
-          for v in SITE_URL FORM_ENDPOINT TURNSTILE_SITE_KEY; do
-            if [ -z "${!v}" ]; then echo "::error::Repository variable $v is not set"; exit 1; fi
-          done
+          if [ -z "$SITE_URL" ]; then echo "::notice::SITE_URL not set - using the GitHub Pages address (review mode)"; fi
+          if { [ -n "$FORM_ENDPOINT" ] && [ -z "$TURNSTILE_SITE_KEY" ]; } || { [ -z "$FORM_ENDPOINT" ] && [ -n "$TURNSTILE_SITE_KEY" ]; }; then
+            echo "::error::Set BOTH FORM_ENDPOINT and TURNSTILE_SITE_KEY, or neither"; exit 1
+          fi
+          if [ -z "$FORM_ENDPOINT" ]; then echo "::warning::Form backend not configured - the enquiry form is disabled in this deploy"; fi
 
       - name: Assemble site
+        env:
+          PAGES_URL: ${{ steps.pages.outputs.base_url }}
         run: |
+          SITE_URL="${SITE_URL:-$PAGES_URL}"
+          SITE_URL="${SITE_URL%/}"
+          BASE_PATH=$(echo "$SITE_URL" | sed -E 's|^https?://[^/]+||')   # "" on a custom domain, "/repo" on github.io project pages
           mkdir _site
           cp -r index.html 404.html robots.txt sitemap.xml assets _site/
           [ -f CNAME ] && cp CNAME _site/ || true
           touch _site/.nojekyll
-          sed -i.bak "s|__SITE_URL__|${SITE_URL%/}|g" _site/index.html _site/robots.txt _site/sitemap.xml
-          # Production runtime config (public values only)
+          sed -i.bak "s|__SITE_URL__|${SITE_URL}|g" _site/index.html _site/robots.txt _site/sitemap.xml
+          sed -i.bak "s|\"/assets/|\"${BASE_PATH}/assets/|g; s|href=\"/\"|href=\"${BASE_PATH}/\"|g" _site/404.html
+          # Production runtime config (public values only; empty = form disabled)
           cat > _site/assets/js/config.js <<JS
           document.documentElement.classList.add('js');
           window.DRAGON_CONFIG = { formEndpoint: '${FORM_ENDPOINT}', turnstileSiteKey: '${TURNSTILE_SITE_KEY}' };
           JS
-          # Tighten the CSP: connect only to this site and the enquiry Worker
+          # Tighten the CSP: connect only to this site and the enquiry Worker (if any)
           FORM_ORIGIN=$(echo "$FORM_ENDPOINT" | sed -E 's|^(https?://[^/]+).*|\1|')
           sed -i.bak -E "s|connect-src [^;]*;|connect-src 'self' ${FORM_ORIGIN};|" _site/index.html
           find _site -name '*.bak' -delete
           grep -q "localhost" _site/index.html && { echo "::error::localhost left in CSP"; exit 1; } || true
 
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
