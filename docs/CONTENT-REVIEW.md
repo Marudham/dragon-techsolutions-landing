@@ -36,7 +36,7 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 | 8 | Footer credit | "Designed & developed by Blueark" | Remove/link as Blueark prefers |
 | 9 | Social links | Facebook, Instagram, YouTube from the live site | Confirm they are current |
 | 10 | Privacy note | Short note in footer (data sent by e-mail only, no trackers) | Have the client's counsel review for DPDP Act wording |
-| 11 | Background images | Server-room and support images from the PDF (hero and banner) | Confirm the client holds usage rights |
+| 11 | Photos | The landing and form pages use no photos (the dark server-room/support backgrounds were removed with the light theme) | The full website page still shows the network and devices photos from the PDF: confirm usage rights (see `CONTENT-REVIEW-website.md`) |
 
 
 ## Facts guarded by `npm run check:site`

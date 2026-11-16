@@ -31,7 +31,7 @@ No credentials exist in the repo or in the web page. The delivery address and ma
 | Path | What it is |
 |---|---|
 | `index.html`, `book-a-call/index.html`, `website/index.html` | The three pages (semantic, SEO, strict CSP via `<meta>`) |
-| `assets/css/styles.css` | Hand-written CSS using the Stitch "Titan Infrastructure" design tokens |
+| `assets/css/styles.css` | Hand-written CSS: light, flat theme from the Dragon logo (warm paper, charcoal, brand red); colours are variables in `:root` |
 | `assets/js/main.js` | Nav, scroll effects, form validation/submit, lazy Turnstile |
 | `assets/js/config.js` | Public runtime config. **Empty in git**; the deploy workflow injects production values |
 | `assets/img/`, `assets/fonts/` | Logo, background images, the two email-platform logos (cut from the company profile PDF), self-hosted fonts |
