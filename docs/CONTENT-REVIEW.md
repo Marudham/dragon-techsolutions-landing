@@ -20,6 +20,7 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 | E5 | How it works | 1 Strategy call → 2 Plan and move (migration) → 3 Ongoing support | Is mailbox migration part of the offer? Steps and wording |
 | E6 | Landing | "Book a Strategy Call" opens the form page; "Explore the website" opens https://dragontechsolutions.com/ in a new tab | Confirmed by the team on 16 Nov (see pivot notes) |
 | E7 | Form page | Fields: first/last name, business email, phone (optional), job role, job title, company, country, message, consent. No service selector, no designation | Any extra field wanted (e.g. number of mailboxes)? |
+| E9 | Landing + form badge, tick-point | "Business email solutions at low cost"; "We provide advanced security for email" | Wording supplied by the team (16 Nov). "Low cost" and "advanced security" are claims by BlueArk/Dragon, not checked against any price list or certification |
 | E8 | Email to the team | Subject/body tagged "Email Solutions" | Preferred subject line / CC |
 
 ## Company facts (carried over)
