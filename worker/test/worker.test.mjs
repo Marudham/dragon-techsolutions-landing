@@ -13,7 +13,7 @@ const baseEnv = () => ({
 });
 const goodBody = (over = {}) => ({
   name: 'Asha Rao', email: 'asha@example.test', phone: '+91 98765 43210', company: 'Acme',
-  service: 'Technology Audit', message: 'We would like an audit of our network.', consent: true,
+  message: 'We would like an audit of our network.', consent: true,
   website: '', turnstileToken: 'tok', ...over,
 });
 const req = (body, { origin = ORIGIN, method = 'POST', headers = {} } = {}) =>
@@ -48,7 +48,8 @@ test('happy path sends one e-mail to contact@blueark.co.in with Reply-To = visit
   const payload = JSON.parse(mail.init.body);
   assert.deepEqual(payload.to, ['contact@blueark.co.in']);
   assert.equal(payload.reply_to, 'asha@example.test');
-  assert.match(payload.subject, /Technology Audit/);
+  assert.match(payload.subject, /Email Solutions/);
+  assert.match(payload.text, /Topic: Email Solutions/);
 });
 
 test('turnstile is verified server-side with the secret and visitor IP', async (t) => {
@@ -96,12 +97,13 @@ test('server-side validation returns per-field errors', async (t) => {
   const res = await handleRequest(req({ turnstileToken: 'tok' }), baseEnv());
   assert.equal(res.status, 400);
   const data = await res.json();
-  for (const k of ['name', 'email', 'phone', 'service', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
+  for (const k of ['name', 'email', 'phone', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
   assert.equal(calls.length, 0);
 });
 
-test('validate(): service must be from the allow-list, consent must be literally true', () => {
-  assert.ok(validate(goodBody({ service: 'Hacked' })).errors.service);
+test('validate(): consent must be literally true, phone must be plausible, no service field is needed', () => {
+  assert.equal('service' in validate(goodBody({ service: 'Hacked' })).values, false);
+  assert.deepEqual(validate(goodBody({ service: 'Hacked' })).errors, {});
   assert.ok(validate(goodBody({ consent: 'true' })).errors.consent);
   assert.ok(validate(goodBody({ phone: 'abc' })).errors.phone);
   assert.ok(validate(goodBody({ phone: '12345' })).errors.phone);
@@ -183,4 +185,11 @@ test('webhook provider posts the same message with bearer token', async (t) => {
   const call = calls.find((c) => c.url === 'https://mail.example.test/send');
   assert.equal(call.init.headers.Authorization, 'Bearer tkn');
   assert.deepEqual(JSON.parse(call.init.body).to, ['contact@blueark.co.in']);
+});
+
+test('topic: every enquiry is tagged "Email Solutions" by the Worker, overridable via ENQUIRY_TOPIC', () => {
+  const { values } = validate(goodBody());
+  assert.match(buildMessage(values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).subject, /Email Solutions/);
+  const custom = buildMessage(values, { receivedAt: 't', origin: ORIGIN }, { ...baseEnv(), ENQUIRY_TOPIC: 'Spring campaign' });
+  assert.match(custom.subject, /Spring campaign/);
 });

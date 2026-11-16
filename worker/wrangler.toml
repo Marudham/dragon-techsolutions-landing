@@ -13,6 +13,7 @@ MAIL_TO = "contact@blueark.co.in"
 # Sender must be on a domain verified with the mail provider.
 MAIL_FROM = "Dragon TechSolutions Website <no-reply@REPLACE-VERIFIED-DOMAIN>"
 MAIL_PROVIDER = "resend"   # resend | webhook
+# ENQUIRY_TOPIC = "Email Solutions"   # optional: label shown in the subject/body of every enquiry mail (default shown)
 # TURNSTILE_HOSTNAMES = "REPLACE-WITH-CUSTOMER-SUBDOMAIN"
 DAILY_CAP = "200"
 PER_IP_HOURLY = "5"

@@ -10,22 +10,15 @@
  *
  * Config (see wrangler.toml and docs/DEPLOYMENT.md):
  *   vars:    ALLOWED_ORIGINS, MAIL_TO, MAIL_FROM, MAIL_CC?, MAIL_PROVIDER, DAILY_CAP?,
- *            TURNSTILE_HOSTNAMES?
+ *            TURNSTILE_HOSTNAMES?, ENQUIRY_TOPIC? (default "Email Solutions")
  *   secrets: TURNSTILE_SECRET, RESEND_API_KEY | MAIL_WEBHOOK_TOKEN
  *   bindings (optional): RATE_LIMITER (Rate Limiting), RATE_KV (KV namespace)
  */
 
 const MAX_BODY_BYTES = 10 * 1024;
-const SERVICES = [
-  'IT Infrastructure Management',
-  'Technology Audit',
-  'Outsourcing',
-  'Turnkey Projects',
-  'IT Infrastructure & Networking',
-  'Products (Hardware / Software)',
-  'Rental Products',
-  'Other',
-];
+// Every enquiry from this landing page is about the e-mail solution. The Worker tags it itself
+// (the browser cannot choose or change this); override per deployment with ENQUIRY_TOPIC.
+const DEFAULT_TOPIC = 'Email Solutions';
 
 /* ------------------------------------------------------------------ helpers */
 
@@ -66,14 +59,12 @@ export function validate(input) {
     email: oneLine(input.email, 150),
     phone: oneLine(input.phone, 20),
     company: oneLine(input.company, 120),
-    service: oneLine(input.service, 60),
     message: clean(input.message, 2000),
   };
   if (v.name.length < 2) errors.name = 'Please enter your name.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) errors.email = 'Please enter a valid email address.';
   const digits = v.phone.replace(/\D/g, '');
   if (!/^[+\d][\d\s\-()]*$/.test(v.phone) || digits.length < 7 || digits.length > 15) errors.phone = 'Please enter a valid phone number.';
-  if (!SERVICES.includes(v.service)) errors.service = 'Please choose a service.';
   if (v.message.length < 10) errors.message = 'Please add a few more details (at least 10 characters).';
   if (input.consent !== true) errors.consent = 'Please tick the box to continue.';
   return { values: v, errors };
@@ -125,13 +116,14 @@ async function rateLimited(env, ip) {
 /* --------------------------------------------------------------------- mail */
 
 export function buildMessage(v, meta, env) {
-  const subject = oneLine(`New website enquiry: ${v.service} – ${v.name}`, 200);
+  const topic = oneLine(env.ENQUIRY_TOPIC || DEFAULT_TOPIC, 60);
+  const subject = oneLine(`New website enquiry: ${topic} – ${v.name}`, 200);
   const rows = [
     ['Name', v.name],
     ['Email', v.email],
     ['Phone', v.phone],
     ['Company', v.company || '—'],
-    ['Service', v.service],
+    ['Topic', topic],
   ];
   const text =
     `New enquiry from the Dragon TechSolutions website\n\n` +

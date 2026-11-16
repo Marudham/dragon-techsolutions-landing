@@ -1,6 +1,7 @@
 # Dragon TechSolutions – landing page
 
-Single-page, fully responsive marketing site for **Dragon TechSolutions** ("For Your Business Needs"), built by Blueark.
+Single-page, fully responsive landing page for **Dragon TechSolutions** ("For Your Business Needs"), built by Blueark.
+It is focused only on **business email solutions** (Microsoft 365 / Google Workspace) for a demand-generation campaign, with a "Book a strategy call" form. See [docs/email-solutions-pivot.md](docs/email-solutions-pivot.md).
 Static HTML/CSS/JS hosted on **GitHub Pages**; the enquiry form posts to a small **Cloudflare Worker** that e-mails the lead.
 
 ```
@@ -12,7 +13,7 @@ Static HTML/CSS/JS hosted on **GitHub Pages**; the enquiry form posts to a small
                                       3. Honeypot, per-IP + daily rate limits
                                       4. Server-side validation (never trusts the browser)
                                       5. Cloudflare Turnstile verification (secret stays server-side)
-                                      6. Sends e-mail to contact@blueark.co.in (Reply-To = visitor)
+                                      6. Sends e-mail to contact@blueark.co.in (Reply-To = visitor), tagged "Email Solutions"
 ```
 
 No credentials exist in the repo or in the web page. The delivery address and mail keys live only in the Worker's config/secrets.
@@ -25,13 +26,15 @@ No credentials exist in the repo or in the web page. The delivery address and ma
 | `assets/css/styles.css` | Hand-written CSS using the Stitch "Titan Infrastructure" design tokens |
 | `assets/js/main.js` | Nav, scroll effects, form validation/submit, lazy Turnstile |
 | `assets/js/config.js` | Public runtime config. **Empty in git**; the deploy workflow injects production values |
-| `assets/img/`, `assets/fonts/` | Optimised logos (cut from the company profile PDF), photos, self-hosted fonts |
+| `assets/img/`, `assets/fonts/` | Logo, background images, the two email-platform logos (cut from the company profile PDF), self-hosted fonts |
 | `worker/` | Cloudflare Worker (`src/index.js`), `wrangler.toml`, unit tests |
 | `scripts/dev-server.mjs` | Local review server: serves the site **and** runs the real Worker with a fake mail sink |
 | `scripts/check-site.mjs` | Static checks (links, icons, CSP-safety, forbidden claims, secret scan) |
 | `.github/workflows/deploy.yml` | Test → assemble → deploy to GitHub Pages |
 | `docs/DEPLOYMENT.md` | Step-by-step go-live runbook incl. DNS for the customer |
 | `docs/CONTENT-REVIEW.md` | Facts/assumptions the client must confirm |
+| `docs/email-solutions-pivot.md` | Change request 2: email-only page, decisions taken, what is still open |
+| `docs/voice-note-transcript-2026-11-15.md` | Transcript + English translation of the team's Tamil voice note |
 
 ## Run locally (review)
 
@@ -43,7 +46,7 @@ npm run dev            # http://localhost:8080
 
 * The form works end-to-end locally: Turnstile uses Cloudflare's official **test keys**, and the Worker "sends" mail to an in-memory sink.
   Open <http://localhost:8080/__mailsink> to see exactly what would be delivered to `contact@blueark.co.in`. Nothing is really e-mailed.
-* `npm test` – 17 Worker unit tests (validation, CORS/origin, honeypot, Turnstile, rate limits, header-injection, providers).
+* `npm test` – 18 Worker unit tests (validation, CORS/origin, honeypot, Turnstile, rate limits, header-injection, providers).
 * `npm run check:site` – static checks.
 
 ## Deploy

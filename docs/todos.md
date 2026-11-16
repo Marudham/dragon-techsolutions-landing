@@ -1,6 +1,6 @@
 # TODO / reference
 
-## Status (as of 2026-11-15)
+## Status (as of 2026-11-16)
 
 | Step | What | Status |
 |---|---|---|
@@ -12,6 +12,8 @@
 | 6 | KV rate limiting (`RATE_KV`) | ⏳ pending |
 | 7 | Smoke-test the deployed Worker with curl | ⏳ pending |
 | 8 | Set GitHub Actions variables (`SITE_URL`, `FORM_ENDPOINT`, `TURNSTILE_SITE_KEY`) | ⏳ pending |
+
+**Phase 1 (review deploy) is done**: https://marudham.github.io/dragon-techsolutions-landing/ . Change request 2 (email-only page, no service selector) is implemented locally and committed; push it to update the live review site. See [email-solutions-pivot.md](email-solutions-pivot.md) for what is still open (email ad template, copy approval).
 
 Also open: client content confirmations in [CONTENT-REVIEW.md](CONTENT-REVIEW.md); customer DNS `CNAME` once the subdomain is known ([DEPLOYMENT.md](DEPLOYMENT.md) §5).
 

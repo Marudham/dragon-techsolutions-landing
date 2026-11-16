@@ -52,6 +52,7 @@ for (const m of index.matchAll(/<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"[
 // 7. Facts that must never regress (see docs/CONTENT-REVIEW.md)
 for (const bad of ['555-DRAG', '+1 (800)', 'enterprise@dragontechsolutions.com', 'lorem ipsum', '99.98', '500+ ', 'John Smith']) if (index.toLowerCase().includes(bad.toLowerCase())) fail(`index.html: forbidden/invented content "${bad}"`);
 for (const must of ['044 46054287', '97510 74995', 'enquiry@dragontechsolutions.com']) if (!index.includes(must)) fail(`index.html: missing contact detail "${must}"`);
+if (/<select\b|name="service"/.test(index)) fail('index.html: the enquiry form must not have a service selector (change request 2)');
 if (index.includes('contact@blueark.co.in')) fail('index.html: the private delivery address must stay server-side (worker/wrangler.toml), not in the page');
 
 // 8. No secrets in the repo (excluding node_modules/.git)

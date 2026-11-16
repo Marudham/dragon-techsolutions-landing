@@ -65,18 +65,6 @@
     $$('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* ---------- Pre-select service from CTA buttons ---------- */
-  var serviceSelect = $('#f-service');
-  $$('[data-service]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      if (!serviceSelect) return;
-      var wanted = el.getAttribute('data-service');
-      for (var i = 0; i < serviceSelect.options.length; i++) {
-        if (serviceSelect.options[i].text === wanted) { serviceSelect.selectedIndex = i; clearError(serviceSelect); break; }
-      }
-    });
-  });
-
   /* ---------- Enquiry form ---------- */
   var form = $('#enquiry-form');
   if (!form) return;
@@ -105,7 +93,6 @@
       if (!/^[+\d][\d\s\-()]*$/.test(v) || digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number.';
       return '';
     },
-    service: function (v) { return v ? '' : 'Please choose a service.'; },
     message: function (v) {
       if (!v) return 'Please tell us a little about your requirement.';
       if (v.length < 10) return 'Please add a few more details (at least 10 characters).';
@@ -215,7 +202,6 @@
       email: form.elements.email.value.trim(),
       phone: form.elements.phone.value.trim(),
       company: form.elements.company.value.trim(),
-      service: form.elements.service.value,
       message: form.elements.message.value.trim(),
       consent: form.elements.consent.checked,
       website: form.elements.website.value,
