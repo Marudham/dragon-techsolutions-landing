@@ -73,6 +73,8 @@
   var successBox = $('#form-success');
   var submitBtn = $('#submit-btn');
   var resetBtn = $('#reset-btn');
+  var idleLabel = submitBtn ? $('.btn__label', submitBtn).textContent : 'Send';
+  var source = form.getAttribute('data-source') || '';
   var tsToken = '';
   var tsWidgetId = null;
 
@@ -173,7 +175,7 @@
     submitBtn.disabled = on;
     submitBtn.classList.toggle('is-loading', on);
     submitBtn.setAttribute('aria-busy', String(on));
-    $('.btn__label', submitBtn).textContent = on ? 'Sending…' : 'Send Enquiry';
+    $('.btn__label', submitBtn).textContent = on ? 'Sending…' : idleLabel;
   }
 
   form.addEventListener('submit', function (e) {
@@ -205,6 +207,7 @@
       message: form.elements.message.value.trim(),
       consent: form.elements.consent.checked,
       website: form.elements.website.value,
+      source: source,
       turnstileToken: tsToken
     };
 

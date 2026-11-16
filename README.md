@@ -1,7 +1,15 @@
 # Dragon TechSolutions – landing page
 
 Single-page, fully responsive landing page for **Dragon TechSolutions** ("For Your Business Needs"), built by Blueark.
-It is focused only on **business email solutions** (Microsoft 365 / Google Workspace) for a demand-generation campaign, with a "Book a strategy call" form. See [docs/email-solutions-pivot.md](docs/email-solutions-pivot.md).
+It is a small campaign site focused on **business email solutions** (Microsoft 365 / Google Workspace), built like BlueArk's other campaign pages:
+
+| Page | Path | Purpose |
+|---|---|---|
+| Landing | `/` | One short screen with two buttons |
+| Form page | `/book-a-call/` | "Book a Strategy Call": the enquiry form only |
+| Full website | `/website/` | "Explore the website": the complete Dragon TechSolutions site |
+
+See [docs/email-solutions-pivot.md](docs/email-solutions-pivot.md).
 Static HTML/CSS/JS hosted on **GitHub Pages**; the enquiry form posts to a small **Cloudflare Worker** that e-mails the lead.
 
 ```
@@ -13,7 +21,7 @@ Static HTML/CSS/JS hosted on **GitHub Pages**; the enquiry form posts to a small
                                       3. Honeypot, per-IP + daily rate limits
                                       4. Server-side validation (never trusts the browser)
                                       5. Cloudflare Turnstile verification (secret stays server-side)
-                                      6. Sends e-mail to contact@blueark.co.in (Reply-To = visitor), tagged "Email Solutions"
+                                      6. Sends e-mail to contact@blueark.co.in (Reply-To = visitor), tagged by page ("Email Solutions" or "Website enquiry")
 ```
 
 No credentials exist in the repo or in the web page. The delivery address and mail keys live only in the Worker's config/secrets.
@@ -22,7 +30,7 @@ No credentials exist in the repo or in the web page. The delivery address and ma
 
 | Path | What it is |
 |---|---|
-| `index.html` | The whole page (semantic, SEO + JSON-LD, strict CSP via `<meta>`) |
+| `index.html`, `book-a-call/index.html`, `website/index.html` | The three pages (semantic, SEO, strict CSP via `<meta>`) |
 | `assets/css/styles.css` | Hand-written CSS using the Stitch "Titan Infrastructure" design tokens |
 | `assets/js/main.js` | Nav, scroll effects, form validation/submit, lazy Turnstile |
 | `assets/js/config.js` | Public runtime config. **Empty in git**; the deploy workflow injects production values |
@@ -32,7 +40,7 @@ No credentials exist in the repo or in the web page. The delivery address and ma
 | `scripts/check-site.mjs` | Static checks (links, icons, CSP-safety, forbidden claims, secret scan) |
 | `.github/workflows/deploy.yml` | Test → assemble → deploy to GitHub Pages |
 | `docs/DEPLOYMENT.md` | Step-by-step go-live runbook incl. DNS for the customer |
-| `docs/CONTENT-REVIEW.md` | Facts/assumptions the client must confirm |
+| `docs/CONTENT-REVIEW.md`, `docs/CONTENT-REVIEW-website.md` | Facts/assumptions the client must confirm (landing + form pages / full website page) |
 | `docs/email-solutions-pivot.md` | Change request 2: email-only page, decisions taken, what is still open |
 | `docs/voice-note-transcript-2026-11-15.md` | Transcript + English translation of the team's Tamil voice note |
 
@@ -46,7 +54,7 @@ npm run dev            # http://localhost:8080
 
 * The form works end-to-end locally: Turnstile uses Cloudflare's official **test keys**, and the Worker "sends" mail to an in-memory sink.
   Open <http://localhost:8080/__mailsink> to see exactly what would be delivered to `contact@blueark.co.in`. Nothing is really e-mailed.
-* `npm test` – 18 Worker unit tests (validation, CORS/origin, honeypot, Turnstile, rate limits, header-injection, providers).
+* `npm test` – 19 Worker unit tests (validation, CORS/origin, honeypot, Turnstile, rate limits, header-injection, providers).
 * `npm run check:site` – static checks.
 
 ## Deploy

@@ -57,3 +57,24 @@ Changes beyond this ("any changes will do it later") are deferred.
 - [ ] Confirm what "Explore the website" should do (currently scrolls on this page; alternative is a link to dragontechsolutions.com).
 - [ ] Tamil speaker to check the lines marked **[unclear]** in the voice-note transcript.
 - [ ] Social preview image (`og-image.png`) regenerated for the email message.
+
+
+---
+
+## Follow-up (16 Nov 2026): the real page structure the team expects
+
+After seeing the first email-only version the team clarified that they want **three separate pages**, with BlueArk's own campaign pages
+(https://blueark.co.in/campaign-assets → `/landing/demand-generation`, `/landing/arkmail/`, and a Red Hat style form page) used as the
+**structure only**. The visual design stays Dragon's own.
+
+| Page | URL (relative) | What it is |
+|---|---|---|
+| Landing | `/` | One short screen: logo, badge, headline, intro, six tick-points, **Book a Strategy Call** and **Explore the website** buttons, platform logos, small footer |
+| Form page | `/book-a-call/` | Single page with the enquiry form only (intro + what to expect on the left, boxed form on the right), reached from "Book a Strategy Call" |
+| Full website | `/website/` | The first-built full Dragon TechSolutions website (what was tagged `v1-full-profile`), reached from "Explore the website" |
+
+Decisions taken (change anything later):
+- The full website keeps its original content and design; its form lost the service selector too (same rule for every form). Its "Enquire" buttons simply go to the contact section.
+- Every form posts to the same Worker with a `source` key (`book` or `website`). The Worker maps it to a label (allow-list): `Email Solutions` or `Website enquiry`, shown in the mail subject/body, so the team can tell campaign leads from general website enquiries.
+- Page copy is still a draft for the team to approve (see `CONTENT-REVIEW.md`); the full website's items are in `CONTENT-REVIEW-website.md`.
+- Landing and form pages use one shared stylesheet and script with the website (`assets/`), so a design change is made once.

@@ -16,9 +16,13 @@
  */
 
 const MAX_BODY_BYTES = 10 * 1024;
-// Every enquiry from this landing page is about the e-mail solution. The Worker tags it itself
-// (the browser cannot choose or change this); override per deployment with ENQUIRY_TOPIC.
+// Which page the enquiry came from. The browser only sends a short key; the Worker maps it to the
+// label shown in the e-mail (allow-list, so arbitrary text can never reach the subject line).
+//   campaign / book -> the e-mail-solutions landing flow ("Email Solutions", override with ENQUIRY_TOPIC)
+//   website         -> the full Dragon TechSolutions website
 const DEFAULT_TOPIC = 'Email Solutions';
+const WEBSITE_TOPIC = 'Website enquiry';
+const SOURCES = ['campaign', 'book', 'website'];
 
 /* ------------------------------------------------------------------ helpers */
 
@@ -60,6 +64,7 @@ export function validate(input) {
     phone: oneLine(input.phone, 20),
     company: oneLine(input.company, 120),
     message: clean(input.message, 2000),
+    source: SOURCES.includes(oneLine(input.source, 20)) ? oneLine(input.source, 20) : 'book',
   };
   if (v.name.length < 2) errors.name = 'Please enter your name.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) errors.email = 'Please enter a valid email address.';
@@ -116,8 +121,8 @@ async function rateLimited(env, ip) {
 /* --------------------------------------------------------------------- mail */
 
 export function buildMessage(v, meta, env) {
-  const topic = oneLine(env.ENQUIRY_TOPIC || DEFAULT_TOPIC, 60);
-  const subject = oneLine(`New website enquiry: ${topic} – ${v.name}`, 200);
+  const topic = v.source === 'website' ? WEBSITE_TOPIC : oneLine(env.ENQUIRY_TOPIC || DEFAULT_TOPIC, 60);
+  const subject = oneLine(`New enquiry: ${topic} – ${v.name}`, 200);
   const rows = [
     ['Name', v.name],
     ['Email', v.email],

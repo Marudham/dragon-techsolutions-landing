@@ -13,16 +13,24 @@ const problems = [];
 const fail = (m) => problems.push(m);
 const read = (f) => readFileSync(path.join(ROOT, f), 'utf8');
 
-for (const page of ['index.html', '404.html']) {
-  const html = read(page);
+// Pages: landing (/), full website (/website/), form page (/book-a-call/) and the 404.
+const PAGES = ['index.html', 'website/index.html', 'book-a-call/index.html', '404.html'];
+const FORM_PAGES = ['website/index.html', 'book-a-call/index.html'];
+const all = {};
 
-  // 1. Local references exist
+for (const page of PAGES) {
+  const html = (all[page] = read(page));
+  const dir = path.dirname(page);
+
+  // 1. Local references exist (resolved relative to the page, or from the site root when they start with "/")
   for (const m of html.matchAll(/(?:src|href)="([^"#?]+)(?:[?#][^"]*)?"/g)) {
     const ref = m[1];
     if (/^(https?:|mailto:|tel:|data:)/.test(ref)) continue;
-    const file = ref.startsWith('/') ? ref.slice(1) : ref;
-    if (!file || file === '/') continue;
-    if (!existsSync(path.join(ROOT, file))) fail(`${page}: missing file "${ref}"`);
+    const target = ref.startsWith('/') ? ref.slice(1) : path.join(dir, ref);
+    if (!target || target === '.' || target === '/') continue;
+    const full = path.join(ROOT, target);
+    const ok = existsSync(full) && (statSync(full).isFile() || existsSync(path.join(full, 'index.html')));
+    if (!ok) fail(`${page}: missing file "${ref}"`);
   }
 
   // 2. CSP-safe: no inline style attributes, no inline scripts (JSON-LD data blocks are fine)
@@ -32,28 +40,31 @@ for (const page of ['index.html', '404.html']) {
 
   // 3. Images need alt (empty alt allowed for decorative)
   for (const m of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt="/.test(m[0])) fail(`${page}: <img> without alt: ${m[0].slice(0, 80)}`);
+
+  // 4. In-page anchors resolve; SVG sprite symbols exist
+  const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  for (const m of html.matchAll(/href="#([^"]+)"/g)) if (!ids.has(m[1])) fail(`${page}: anchor #${m[1]} has no matching id`);
+  const symbols = new Set([...html.matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1]));
+  for (const m of html.matchAll(/<use href="#([^"]+)"/g)) if (!symbols.has(m[1])) fail(`${page}: <use href="#${m[1]}"> has no <symbol>`);
+
+  // 5. Heading, form and label rules (404 is exempt from the h1/form rules)
+  if (page !== '404.html') {
+    if ((html.match(/<h1[\s>]/g) || []).length !== 1) fail(`${page}: expected exactly one <h1>`);
+    const forms = (html.match(/<form[\s>]/g) || []).length;
+    if (FORM_PAGES.includes(page) ? forms !== 1 : forms !== 0) fail(`${page}: expected ${FORM_PAGES.includes(page) ? 'exactly one' : 'no'} <form>, found ${forms}`);
+    for (const m of html.matchAll(/<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>/g)) if (!new RegExp(`for="${m[1]}"`).test(html)) fail(`${page}: field #${m[1]} has no <label for>`);
+    // 6. No service selector anywhere (change request 2) and the private delivery address stays server-side
+    if (/<select\b|name="service"/.test(html)) fail(`${page}: the enquiry form must not have a service selector (change request 2)`);
+    if (html.includes('contact@blueark.co.in')) fail(`${page}: the private delivery address must stay server-side (worker/wrangler.toml), not in the page`);
+    // 7. Facts that must never regress (see docs/CONTENT-REVIEW.md)
+    for (const bad of ['555-DRAG', '+1 (800)', 'enterprise@dragontechsolutions.com', 'lorem ipsum', '99.98', '500+ ', 'John Smith']) if (html.toLowerCase().includes(bad.toLowerCase())) fail(`${page}: forbidden/invented content "${bad}"`);
+    for (const must of ['044 46054287', '97510 74995', 'enquiry@dragontechsolutions.com']) if (!html.includes(must)) fail(`${page}: missing contact detail "${must}"`);
+  }
 }
-
-const index = read('index.html');
-
-// 4. In-page anchors resolve
-const ids = new Set([...index.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
-for (const m of index.matchAll(/href="#([^"]+)"/g)) if (!ids.has(m[1])) fail(`index.html: anchor #${m[1]} has no matching id`);
-
-// 5. SVG sprite symbols exist
-const symbols = new Set([...index.matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1]));
-for (const m of index.matchAll(/<use href="#([^"]+)"/g)) if (!symbols.has(m[1])) fail(`index.html: <use href="#${m[1]}"> has no <symbol>`);
-
-// 6. Exactly one h1, one form, labels for fields
-if ((index.match(/<h1[\s>]/g) || []).length !== 1) fail('index.html: expected exactly one <h1>');
-if ((index.match(/<form[\s>]/g) || []).length !== 1) fail('index.html: expected exactly one <form>');
-for (const m of index.matchAll(/<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>/g)) if (!new RegExp(`for="${m[1]}"`).test(index)) fail(`index.html: field #${m[1]} has no <label for>`);
-
-// 7. Facts that must never regress (see docs/CONTENT-REVIEW.md)
-for (const bad of ['555-DRAG', '+1 (800)', 'enterprise@dragontechsolutions.com', 'lorem ipsum', '99.98', '500+ ', 'John Smith']) if (index.toLowerCase().includes(bad.toLowerCase())) fail(`index.html: forbidden/invented content "${bad}"`);
-for (const must of ['044 46054287', '97510 74995', 'enquiry@dragontechsolutions.com']) if (!index.includes(must)) fail(`index.html: missing contact detail "${must}"`);
-if (/<select\b|name="service"/.test(index)) fail('index.html: the enquiry form must not have a service selector (change request 2)');
-if (index.includes('contact@blueark.co.in')) fail('index.html: the private delivery address must stay server-side (worker/wrangler.toml), not in the page');
+// The two CTAs on the landing page must lead to the other two pages.
+if (!/href="book-a-call\/"/.test(all['index.html'])) fail('index.html: "Book a Strategy Call" must link to book-a-call/');
+if (!/href="website\/"/.test(all['index.html'])) fail('index.html: "Explore the website" must link to website/');
+const ids = new Set(), symbols = new Set(); // for the summary line only
 
 // 8. No secrets in the repo (excluding node_modules/.git)
 const SECRET = /(re_[A-Za-z0-9]{20,}|sk_(live|test)_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|0x4[A-Za-z0-9_-]{20,}|api[_-]?key\s*[:=]\s*['"][A-Za-z0-9_\-]{16,})/;
@@ -70,4 +81,4 @@ const cfg = read('assets/js/config.js');
 if (/formEndpoint:\s*'[^']+'/.test(cfg) || /turnstileSiteKey:\s*'[^']+'/.test(cfg)) fail('assets/js/config.js should stay empty in git; production values are injected by the deploy workflow');
 
 if (problems.length) { console.error('Site checks FAILED:\n - ' + problems.join('\n - ')); process.exit(1); }
-console.log(`Site checks passed (${ids.size} ids, ${symbols.size} icons, ${walk(ROOT).length} files scanned).`);
+console.log(`Site checks passed (${PAGES.length} pages, ${walk(ROOT).length} files scanned).`);

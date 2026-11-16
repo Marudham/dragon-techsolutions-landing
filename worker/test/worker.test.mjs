@@ -193,3 +193,12 @@ test('topic: every enquiry is tagged "Email Solutions" by the Worker, overridabl
   const custom = buildMessage(values, { receivedAt: 't', origin: ORIGIN }, { ...baseEnv(), ENQUIRY_TOPIC: 'Spring campaign' });
   assert.match(custom.subject, /Spring campaign/);
 });
+
+test('source: website enquiries are labelled "Website enquiry"; unknown sources fall back to the e-mail topic', () => {
+  const msg = (over) => buildMessage(validate(goodBody(over)).values, { receivedAt: 't', origin: ORIGIN }, baseEnv());
+  assert.match(msg({ source: 'website' }).subject, /Website enquiry/);
+  assert.match(msg({ source: 'book' }).subject, /Email Solutions/);
+  const evil = msg({ source: 'Hacked\r\nBcc: x@evil.test' });
+  assert.match(evil.subject, /Email Solutions/);
+  assert.ok(!/Hacked/.test(evil.subject + evil.text));
+});

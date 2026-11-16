@@ -89,9 +89,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     let rel = decodeURIComponent(url.pathname);
+    if (['/website', '/book-a-call'].includes(rel)) { res.writeHead(301, { Location: rel + '/' }).end(); return; } // like GitHub Pages
     if (rel.endsWith('/')) rel += 'index.html';
     const file = path.normalize(path.join(ROOT, rel));
-    const allowedTop = ['/index.html', '/assets/', '/robots.txt', '/sitemap.xml', '/404.html'];
+    const allowedTop = ['/index.html', '/website/', '/book-a-call/', '/assets/', '/robots.txt', '/sitemap.xml', '/404.html'];
     const relPosix = '/' + path.relative(ROOT, file).split(path.sep).join('/');
     if (!file.startsWith(ROOT + path.sep) || !allowedTop.some((p) => relPosix === p || relPosix.startsWith(p))) {
       res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');

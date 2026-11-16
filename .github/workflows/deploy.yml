@@ -62,10 +62,11 @@ jobs:
           SITE_URL="${SITE_URL%/}"
           BASE_PATH=$(echo "$SITE_URL" | sed -E 's|^https?://[^/]+||')   # "" on a custom domain, "/repo" on github.io project pages
           mkdir _site
-          cp -r index.html 404.html robots.txt sitemap.xml assets _site/
+          cp -r index.html 404.html robots.txt sitemap.xml assets website book-a-call _site/
           [ -f CNAME ] && cp CNAME _site/ || true
           touch _site/.nojekyll
-          sed -i.bak "s|__SITE_URL__|${SITE_URL}|g" _site/index.html _site/robots.txt _site/sitemap.xml
+          find _site -name '*.html' ! -name 404.html -print0 | xargs -0 sed -i.bak "s|__SITE_URL__|${SITE_URL}|g"
+          sed -i.bak "s|__SITE_URL__|${SITE_URL}|g" _site/robots.txt _site/sitemap.xml
           sed -i.bak "s|\"/assets/|\"${BASE_PATH}/assets/|g; s|href=\"/\"|href=\"${BASE_PATH}/\"|g" _site/404.html
           # Production runtime config (public values only; empty = form disabled)
           cat > _site/assets/js/config.js <<JS
@@ -74,9 +75,10 @@ jobs:
           JS
           # Tighten the CSP: connect only to this site and the enquiry Worker (if any)
           FORM_ORIGIN=$(echo "$FORM_ENDPOINT" | sed -E 's|^(https?://[^/]+).*|\1|')
-          sed -i.bak -E "s|connect-src [^;]*;|connect-src 'self' ${FORM_ORIGIN};|" _site/index.html
+          find _site -name '*.html' -print0 | xargs -0 sed -i.bak -E "s|connect-src [^;]*;|connect-src 'self' ${FORM_ORIGIN};|"
           find _site -name '*.bak' -delete
-          grep -q "localhost" _site/index.html && { echo "::error::localhost left in CSP"; exit 1; } || true
+          if grep -rq "localhost" _site --include=*.html; then echo "::error::localhost left in CSP"; exit 1; fi
+          if grep -rq "__SITE_URL__" _site; then echo "::error::__SITE_URL__ placeholder left"; exit 1; fi
 
       - uses: actions/upload-pages-artifact@v3
         with:

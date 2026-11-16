@@ -1,6 +1,8 @@
 # Content review – items for Dragon TechSolutions / BlueArk to confirm
 
-The page is now **email-solutions only** (change request 2, see [email-solutions-pivot.md](email-solutions-pivot.md)).
+Covers the **landing page** (`/`) and the **form page** (`/book-a-call/`). The full website page (`/website/`) has its own list: [CONTENT-REVIEW-website.md](CONTENT-REVIEW-website.md).
+
+The landing and form pages are **email-solutions only** (change request 2, see [email-solutions-pivot.md](email-solutions-pivot.md)).
 Company facts come from the company profile PDF ("Dragon Techsolutions ProfilesUpdated2026") and the client's website.
 **Nothing numeric or certified was invented**: no uptime %, customer counts, prices, SLAs or certifications appear on the page.
 
@@ -16,15 +18,15 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 | E3 | Why it matters | Free/shared mailboxes, phishing/spam, passwords-only sign-in, no admin control | The "insecure email" angle from the voice note was unclear – is this the message the team wants? |
 | E4 | Benefits | Own-domain addresses, built-in spam/phishing filtering, multi-factor sign-in, admin console, any device, calendar/meetings/files | Wording and any extra benefits (migration, backup, archiving, compliance) |
 | E5 | How it works | 1 Strategy call → 2 Plan and move (migration) → 3 Ongoing support | Is mailbox migration part of the offer? Steps and wording |
-| E6 | Everywhere | CTA "Book a strategy call" (form) and "Explore the website" (scrolls down) | Should "Explore the website" instead open dragontechsolutions.com? |
-| E7 | Form | Fields: name, work email, phone, company (optional), message, consent. No service selector | Any extra field wanted (e.g. number of mailboxes)? |
+| E6 | Landing | "Book a Strategy Call" opens the form page; "Explore the website" opens the full Dragon website page (`/website/`) | Confirmed by the team on 16 Nov (see pivot notes) |
+| E7 | Form page | Fields: name, work email, phone, company (optional), message, consent. No service selector | Any extra field wanted (e.g. number of mailboxes)? |
 | E8 | Email to the team | Subject/body tagged "Email Solutions" | Preferred subject line / CC |
 
 ## Company facts (carried over)
 
 | # | Item | What the page says now | Source / note |
 |---|---|---|---|
-| 1 | ISO 27001 | **Removed** from the page | Only on the live website ("ISO 27001:**2002**" – probably 2022). Re-add only if certification, year and body are confirmed |
+| 1 | ISO 27001 | **Not on the landing/form pages** (it is still on the full website page) | Only on the live website ("ISO 27001:**2002**" – probably 2022). Re-add only if certification, year and body are confirmed |
 | 2 | Experience | "10+ years" | PDF: "Ten plus years" |
 | 3 | WhatsApp number | `+91 93422 52587` | From the live website's WhatsApp link. The PDF lists only `044 46054287 / 97510 74995` for calls |
 | 4 | Bengaluru address | "…Naidu Layout, **Kankunte Cross**, Vasanthapura Main Road…" | PDF text reads "KnankunteCross" – spelling needs confirming |
@@ -36,7 +38,6 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 | 10 | Privacy note | Short note in footer (data sent by e-mail only, no trackers) | Have the client's counsel review for DPDP Act wording |
 | 11 | Background images | Server-room and support images from the PDF (hero and banner) | Confirm the client holds usage rights |
 
-Removed in change request 2 (still in git tag `v1-full-profile`): client logos, services, rental products, other product brands, testimonial discussion.
 
 ## Facts guarded by `npm run check:site`
 

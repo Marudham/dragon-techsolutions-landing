@@ -13,7 +13,7 @@
 | 7 | Smoke-test the deployed Worker with curl | ⏳ pending |
 | 8 | Set GitHub Actions variables (`SITE_URL`, `FORM_ENDPOINT`, `TURNSTILE_SITE_KEY`) | ⏳ pending |
 
-**Phase 1 (review deploy) is done**: https://marudham.github.io/dragon-techsolutions-landing/ . Change request 2 (email-only page, no service selector) is implemented locally and committed; push it to update the live review site. See [email-solutions-pivot.md](email-solutions-pivot.md) for what is still open (email ad template, copy approval).
+**Phase 1 (review deploy) is done**: https://marudham.github.io/dragon-techsolutions-landing/ . Change request 2 is implemented: landing (`/`), form page (`/book-a-call/`) and full website (`/website/`), no service selector. See [email-solutions-pivot.md](email-solutions-pivot.md) for what is still open (email ad template, copy approval).
 
 Also open: client content confirmations in [CONTENT-REVIEW.md](CONTENT-REVIEW.md); customer DNS `CNAME` once the subdomain is known ([DEPLOYMENT.md](DEPLOYMENT.md) §5).
 
