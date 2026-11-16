@@ -75,17 +75,16 @@
   var resetBtn = $('#reset-btn');
   var idleLabel = submitBtn ? $('.btn__label', submitBtn).textContent : 'Send';
   var source = form.getAttribute('data-source') || '';
+  var fallback = form.getAttribute('data-fallback') || 'try again later';
   var tsToken = '';
   var tsWidgetId = null;
 
+  var req = function (msg, min) { return function (v) { return !v ? msg : (v.length < (min || 1) ? msg : ''); }; };
   var rules = {
-    name: function (v) {
-      if (!v) return 'Please enter your name.';
-      if (v.length < 2) return 'Your name looks too short.';
-      return '';
-    },
+    firstName: req('Please enter your first name.'),
+    lastName: req('Please enter your last name.'),
     email: function (v) {
-      if (!v) return 'Please enter your work email.';
+      if (!v) return 'Please enter your business email.';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Please enter a valid email address.';
       return '';
     },
@@ -95,6 +94,10 @@
       if (!/^[+\d][\d\s\-()]*$/.test(v) || digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number.';
       return '';
     },
+    jobRole: req('Please enter your job role.', 2),
+    jobTitle: req('Please enter your job title.', 2),
+    company: req('Please enter your company name.', 2),
+    country: req('Please choose your country.'),
     message: function (v) {
       if (!v) return 'Please tell us a little about your requirement.';
       if (v.length < 10) return 'Please add a few more details (at least 10 characters).';
@@ -144,7 +147,7 @@
     if (!cfg.turnstileSiteKey || !window.turnstile || tsWidgetId !== null) return;
     tsWidgetId = window.turnstile.render('#turnstile', {
       sitekey: cfg.turnstileSiteKey,
-      theme: 'dark',
+      theme: 'light',
       callback: function (token) { tsToken = token; },
       'expired-callback': function () { tsToken = ''; },
       'error-callback': function () { tsToken = ''; }
@@ -190,7 +193,7 @@
     if (firstBad) { firstBad.focus(); return; }
 
     if (!cfg.formEndpoint) {
-      showAlert('The enquiry service is not configured yet. Please email enquiry@dragontechsolutions.com or call 044 46054287.');
+      showAlert('The enquiry service is not configured yet. Please ' + fallback + '.');
       return;
     }
     if (cfg.turnstileSiteKey && !tsToken) {
@@ -199,15 +202,20 @@
       return;
     }
 
+    var f = form.elements;
     var payload = {
-      name: form.elements.name.value.trim(),
-      email: form.elements.email.value.trim(),
-      phone: form.elements.phone.value.trim(),
-      designation: form.elements.designation ? form.elements.designation.value.trim() : '',
-      company: form.elements.company.value.trim(),
-      message: form.elements.message.value.trim(),
-      consent: form.elements.consent.checked,
-      website: form.elements.website.value,
+      firstName: f.firstName.value.trim(),
+      lastName: f.lastName.value.trim(),
+      email: f.email.value.trim(),
+      phone: f.phone.value.trim(),
+      jobRole: f.jobRole.value.trim(),
+      jobTitle: f.jobTitle.value.trim(),
+      designation: f.designation.value.trim(),
+      company: f.company.value.trim(),
+      country: f.country.value,
+      message: f.message.value.trim(),
+      consent: f.consent.checked,
+      website: f.website.value,
       source: source,
       turnstileToken: tsToken
     };
@@ -245,11 +253,11 @@
       } else if (r.status === 403) {
         showAlert('The spam check failed. Please reload the page and try again.');
       } else {
-        showAlert('Sorry, we could not send your enquiry right now. Please try again, or email enquiry@dragontechsolutions.com.');
+        showAlert('Sorry, we could not send your enquiry right now. Please try again, or ' + fallback + '.');
       }
       resetTurnstile();
     }).catch(function () {
-      showAlert('Network problem. Please check your connection and try again, or email enquiry@dragontechsolutions.com.');
+      showAlert('Network problem. Please check your connection and try again, or ' + fallback + '.');
       resetTurnstile();
     }).then(function () {
       if (timer) clearTimeout(timer);
@@ -262,7 +270,7 @@
       successBox.hidden = true;
       form.hidden = false;
       hideAlert();
-      form.elements.name.focus();
+      form.elements.firstName.focus();
     });
   }
 })();

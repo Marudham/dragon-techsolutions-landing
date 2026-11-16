@@ -55,19 +55,23 @@
         <p class="chip"><span class="chip__dot"></span>Business email solutions</p>
         <h1>Book a <span class="grad">strategy call</span></h1>
         <p class="lead">Tell us a little about your team and your current email. We will get back to you to arrange a call about moving to Microsoft 365 or Google Workspace.</p>
+        <h2 class="book__subhead">What to expect</h2>
         <ul class="lp-points lp-points--single" aria-label="What to expect">
           <li><svg class="icon"><use href="#i-check"/></svg><span>A conversation about your team, your domain and the email you use today</span></li>
           <li><svg class="icon"><use href="#i-check"/></svg><span>A recommendation: Microsoft 365 or Google Workspace</span></li>
           <li><svg class="icon"><use href="#i-check"/></svg><span>A clear plan for the move and for ongoing support</span></li>
         </ul>
-        <ul class="contact__channels book__channels">
-          <li><svg class="icon"><use href="#i-phone"/></svg><span><small>Prefer to call?</small><a href="tel:+914446054287">044 46054287</a> / <a href="tel:+919751074995">97510 74995</a></span></li>
-          <li><svg class="icon"><use href="#i-mail"/></svg><span><small>Email</small><a href="mailto:enquiry@dragontechsolutions.com">enquiry@dragontechsolutions.com</a></span></li>
+        <h2 class="book__subhead">What we can talk through</h2>
+        <ul class="lp-points lp-points--single" aria-label="What we can talk through">
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Choosing between Microsoft 365 and Google Workspace for your team</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Moving your existing mailboxes across without losing mail</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Setting up your own company domain, spam protection and multi-factor sign-in</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Managing users, mailboxes and access day to day</span></li>
         </ul>
       </div>
 
       <div class="book__form">
-        <form id="enquiry-form" class="form glass" data-source="book" novalidate autocomplete="on" aria-labelledby="form-title">
+        <form id="enquiry-form" class="form glass" data-fallback="message us on WhatsApp at +91 96267 95150" data-source="book" novalidate autocomplete="on" aria-labelledby="form-title">
           <h2 class="form__title" id="form-title">Please fill out the form below</h2>
           <p class="form__hint">Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.</p>
 
@@ -75,30 +79,253 @@
 
           <div class="form__row">
             <div class="field">
-              <label for="f-name">Full name <span aria-hidden="true">*</span></label>
-              <input id="f-name" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="e-name">
-              <p class="field__error" id="e-name" hidden></p>
+              <label for="f-firstName">First name <span aria-hidden="true">*</span></label>
+              <input id="f-firstName" name="firstName" type="text" autocomplete="given-name" maxlength="60" required aria-describedby="e-firstName">
+              <p class="field__error" id="e-firstName" hidden></p>
             </div>
             <div class="field">
-              <label for="f-email">Work email <span aria-hidden="true">*</span></label>
-              <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="150" required aria-describedby="e-email">
-              <p class="field__error" id="e-email" hidden></p>
+              <label for="f-lastName">Last name <span aria-hidden="true">*</span></label>
+              <input id="f-lastName" name="lastName" type="text" autocomplete="family-name" maxlength="60" required aria-describedby="e-lastName">
+              <p class="field__error" id="e-lastName" hidden></p>
             </div>
           </div>
           <div class="form__row">
+            <div class="field">
+              <label for="f-email">Business email <span aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="150" required aria-describedby="e-email">
+              <p class="field__error" id="e-email" hidden></p>
+            </div>
             <div class="field">
               <label for="f-phone">Phone number <span aria-hidden="true">*</span></label>
               <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" required aria-describedby="e-phone">
               <p class="field__error" id="e-phone" hidden></p>
             </div>
+          </div>
+          <div class="form__row">
+            <div class="field">
+              <label for="f-jobRole">Job role <span aria-hidden="true">*</span></label>
+              <input id="f-jobRole" name="jobRole" type="text" maxlength="80" required aria-describedby="e-jobRole">
+              <p class="field__error" id="e-jobRole" hidden></p>
+            </div>
+            <div class="field">
+              <label for="f-jobTitle">Job title <span aria-hidden="true">*</span></label>
+              <input id="f-jobTitle" name="jobTitle" type="text" autocomplete="organization-title" maxlength="80" required aria-describedby="e-jobTitle">
+              <p class="field__error" id="e-jobTitle" hidden></p>
+            </div>
+          </div>
+          <div class="form__row">
             <div class="field">
               <label for="f-designation">Designation</label>
-              <input id="f-designation" name="designation" type="text" autocomplete="organization-title" maxlength="100">
+              <input id="f-designation" name="designation" type="text" maxlength="100">
+            </div>
+            <div class="field">
+              <label for="f-company">Company name <span aria-hidden="true">*</span></label>
+              <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120" required aria-describedby="e-company">
+              <p class="field__error" id="e-company" hidden></p>
             </div>
           </div>
           <div class="field">
-            <label for="f-company">Company name</label>
-            <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120">
+            <label for="f-country">Country <span aria-hidden="true">*</span></label>
+            <select id="f-country" name="country" autocomplete="country-name" required aria-describedby="e-country">
+              <option>Afghanistan</option>
+              <option>Albania</option>
+              <option>Algeria</option>
+              <option>Andorra</option>
+              <option>Angola</option>
+              <option>Antigua and Barbuda</option>
+              <option>Argentina</option>
+              <option>Armenia</option>
+              <option>Australia</option>
+              <option>Austria</option>
+              <option>Azerbaijan</option>
+              <option>Bahamas</option>
+              <option>Bahrain</option>
+              <option>Bangladesh</option>
+              <option>Barbados</option>
+              <option>Belarus</option>
+              <option>Belgium</option>
+              <option>Belize</option>
+              <option>Benin</option>
+              <option>Bhutan</option>
+              <option>Bolivia</option>
+              <option>Bosnia and Herzegovina</option>
+              <option>Botswana</option>
+              <option>Brazil</option>
+              <option>Brunei</option>
+              <option>Bulgaria</option>
+              <option>Burkina Faso</option>
+              <option>Burundi</option>
+              <option>Cabo Verde</option>
+              <option>Cambodia</option>
+              <option>Cameroon</option>
+              <option>Canada</option>
+              <option>Central African Republic</option>
+              <option>Chad</option>
+              <option>Chile</option>
+              <option>China</option>
+              <option>Colombia</option>
+              <option>Comoros</option>
+              <option>Congo</option>
+              <option>Costa Rica</option>
+              <option>Côte d’Ivoire</option>
+              <option>Croatia</option>
+              <option>Cuba</option>
+              <option>Cyprus</option>
+              <option>Czechia</option>
+              <option>Democratic Republic of the Congo</option>
+              <option>Denmark</option>
+              <option>Djibouti</option>
+              <option>Dominica</option>
+              <option>Dominican Republic</option>
+              <option>Ecuador</option>
+              <option>Egypt</option>
+              <option>El Salvador</option>
+              <option>Equatorial Guinea</option>
+              <option>Eritrea</option>
+              <option>Estonia</option>
+              <option>Eswatini</option>
+              <option>Ethiopia</option>
+              <option>Fiji</option>
+              <option>Finland</option>
+              <option>France</option>
+              <option>Gabon</option>
+              <option>Gambia</option>
+              <option>Georgia</option>
+              <option>Germany</option>
+              <option>Ghana</option>
+              <option>Greece</option>
+              <option>Grenada</option>
+              <option>Guatemala</option>
+              <option>Guinea</option>
+              <option>Guinea-Bissau</option>
+              <option>Guyana</option>
+              <option>Haiti</option>
+              <option>Honduras</option>
+              <option>Hong Kong</option>
+              <option>Hungary</option>
+              <option>Iceland</option>
+              <option selected>India</option>
+              <option>Indonesia</option>
+              <option>Iran</option>
+              <option>Iraq</option>
+              <option>Ireland</option>
+              <option>Israel</option>
+              <option>Italy</option>
+              <option>Jamaica</option>
+              <option>Japan</option>
+              <option>Jordan</option>
+              <option>Kazakhstan</option>
+              <option>Kenya</option>
+              <option>Kiribati</option>
+              <option>Kuwait</option>
+              <option>Kyrgyzstan</option>
+              <option>Laos</option>
+              <option>Latvia</option>
+              <option>Lebanon</option>
+              <option>Lesotho</option>
+              <option>Liberia</option>
+              <option>Libya</option>
+              <option>Liechtenstein</option>
+              <option>Lithuania</option>
+              <option>Luxembourg</option>
+              <option>Madagascar</option>
+              <option>Malawi</option>
+              <option>Malaysia</option>
+              <option>Maldives</option>
+              <option>Mali</option>
+              <option>Malta</option>
+              <option>Marshall Islands</option>
+              <option>Mauritania</option>
+              <option>Mauritius</option>
+              <option>Mexico</option>
+              <option>Micronesia</option>
+              <option>Moldova</option>
+              <option>Monaco</option>
+              <option>Mongolia</option>
+              <option>Montenegro</option>
+              <option>Morocco</option>
+              <option>Mozambique</option>
+              <option>Myanmar</option>
+              <option>Namibia</option>
+              <option>Nauru</option>
+              <option>Nepal</option>
+              <option>Netherlands</option>
+              <option>New Zealand</option>
+              <option>Nicaragua</option>
+              <option>Niger</option>
+              <option>Nigeria</option>
+              <option>North Korea</option>
+              <option>North Macedonia</option>
+              <option>Norway</option>
+              <option>Oman</option>
+              <option>Pakistan</option>
+              <option>Palau</option>
+              <option>Palestine</option>
+              <option>Panama</option>
+              <option>Papua New Guinea</option>
+              <option>Paraguay</option>
+              <option>Peru</option>
+              <option>Philippines</option>
+              <option>Poland</option>
+              <option>Portugal</option>
+              <option>Qatar</option>
+              <option>Romania</option>
+              <option>Russia</option>
+              <option>Rwanda</option>
+              <option>Saint Kitts and Nevis</option>
+              <option>Saint Lucia</option>
+              <option>Saint Vincent and the Grenadines</option>
+              <option>Samoa</option>
+              <option>San Marino</option>
+              <option>São Tomé and Príncipe</option>
+              <option>Saudi Arabia</option>
+              <option>Senegal</option>
+              <option>Serbia</option>
+              <option>Seychelles</option>
+              <option>Sierra Leone</option>
+              <option>Singapore</option>
+              <option>Slovakia</option>
+              <option>Slovenia</option>
+              <option>Solomon Islands</option>
+              <option>Somalia</option>
+              <option>South Africa</option>
+              <option>South Korea</option>
+              <option>South Sudan</option>
+              <option>Spain</option>
+              <option>Sri Lanka</option>
+              <option>Sudan</option>
+              <option>Suriname</option>
+              <option>Sweden</option>
+              <option>Switzerland</option>
+              <option>Syria</option>
+              <option>Taiwan</option>
+              <option>Tajikistan</option>
+              <option>Tanzania</option>
+              <option>Thailand</option>
+              <option>Timor-Leste</option>
+              <option>Togo</option>
+              <option>Tonga</option>
+              <option>Trinidad and Tobago</option>
+              <option>Tunisia</option>
+              <option>Türkiye</option>
+              <option>Turkmenistan</option>
+              <option>Tuvalu</option>
+              <option>Uganda</option>
+              <option>Ukraine</option>
+              <option>United Arab Emirates</option>
+              <option>United Kingdom</option>
+              <option>United States</option>
+              <option>Uruguay</option>
+              <option>Uzbekistan</option>
+              <option>Vanuatu</option>
+              <option>Vatican City</option>
+              <option>Venezuela</option>
+              <option>Vietnam</option>
+              <option>Yemen</option>
+              <option>Zambia</option>
+              <option>Zimbabwe</option>
+            </select>
+            <p class="field__error" id="e-country" hidden></p>
           </div>
           <div class="field">
             <label for="f-message">How can we help? <span aria-hidden="true">*</span></label>
@@ -137,7 +364,7 @@
     <div class="container">
       <details class="privacy" id="privacy">
         <summary>Privacy note</summary>
-        <p>When you submit the enquiry form we collect the details you enter (name, email, phone, designation, company and message). They are sent securely to our team by email, solely to respond to your enquiry. This website does not store them in a database and uses no advertising trackers. The form is protected by Cloudflare Turnstile to prevent spam. To ask us to delete your enquiry, email <a href="mailto:enquiry@dragontechsolutions.com">enquiry@dragontechsolutions.com</a>.</p>
+        <p>When you submit the enquiry form we collect the details you enter (name, email, phone, job role, job title, designation, company, country and message). They are sent securely to our team by email, solely to respond to your enquiry. This website does not store them in a database and uses no advertising trackers. The form is protected by Cloudflare Turnstile to prevent spam. To ask us to delete your enquiry, message us on WhatsApp at <a href="https://wa.me/919626795150" target="_blank" rel="noopener noreferrer">+91 96267 95150</a>.</p>
       </details>
     </div>
   </main>
@@ -145,12 +372,12 @@
   <footer class="lp-foot">
     <div class="container">
       <p>Dragon TechSolutions – Chennai · Hyderabad · Bengaluru</p>
-      <p>© <span id="year">2026</span> Dragon TechSolutions. Designed &amp; developed by Blueark</p>
+      <p>© <span id="year">2026</span> Dragon TechSolutions. Designed &amp; developed by <a href="https://blueark.co.in/" target="_blank" rel="noopener noreferrer">Blueark</a></p>
     </div>
   </footer>
 
   <aside class="quick-actions" aria-label="Quick actions">
-    <a class="fab fab--wa" href="https://wa.me/919342252587" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+    <a class="fab fab--wa" href="https://wa.me/919626795150" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
   </aside>
 
   <script src="../assets/js/main.js" defer></script>

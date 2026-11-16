@@ -16,6 +16,7 @@ const read = (f) => readFileSync(path.join(ROOT, f), 'utf8');
 // Pages: landing (/), full website (/website/), form page (/book-a-call/) and the 404.
 const PAGES = ['index.html', 'website/index.html', 'book-a-call/index.html', '404.html'];
 const FORM_PAGES = ['website/index.html', 'book-a-call/index.html'];
+const LANDING_PAGES = ['index.html', 'book-a-call/index.html'];
 const all = {};
 
 for (const page of PAGES) {
@@ -54,13 +55,28 @@ for (const page of PAGES) {
     if (FORM_PAGES.includes(page) ? forms !== 1 : forms !== 0) fail(`${page}: expected ${FORM_PAGES.includes(page) ? 'exactly one' : 'no'} <form>, found ${forms}`);
     for (const m of html.matchAll(/<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>/g)) if (!new RegExp(`for="${m[1]}"`).test(html)) fail(`${page}: field #${m[1]} has no <label for>`);
     // 6. No service selector anywhere (change request 2) and the private delivery address stays server-side
-    if (/<select\b|name="service"/.test(html)) fail(`${page}: the enquiry form must not have a service selector (change request 2)`);
+    if (/name="service"|id="f-service"/.test(html)) fail(`${page}: the enquiry form must not have a service selector (change request 2)`);
     if (html.includes('contact@blueark.co.in')) fail(`${page}: the private delivery address must stay server-side (worker/wrangler.toml), not in the page`);
     // 7. Facts that must never regress (see docs/CONTENT-REVIEW.md)
     for (const bad of ['555-DRAG', '+1 (800)', 'enterprise@dragontechsolutions.com', 'lorem ipsum', '99.98', '500+ ', 'John Smith']) if (html.toLowerCase().includes(bad.toLowerCase())) fail(`${page}: forbidden/invented content "${bad}"`);
-    for (const must of ['044 46054287', '97510 74995', 'enquiry@dragontechsolutions.com']) if (!html.includes(must)) fail(`${page}: missing contact detail "${must}"`);
+    // Landing + form pages must NOT show Dragon's own contact details (team request, 16 Nov); the full website must.
+    const COMPANY = ['044 46054287', '97510 74995', 'enquiry@dragontechsolutions.com', '+914446054287', '+919751074995'];
+    for (const c of COMPANY) {
+      const present = html.includes(c);
+      if (LANDING_PAGES.includes(page) && present) fail(`${page}: company contact detail "${c}" must not appear on landing pages`);
+    }
+    if (page === 'website/index.html') for (const c of COMPANY.slice(0, 3)) if (!html.includes(c)) fail(`${page}: missing contact detail "${c}"`);
+    // WhatsApp is the one contact option, and it must be the BlueArk number.
+    if (!html.includes('https://wa.me/919626795150')) fail(`${page}: WhatsApp link must point to 919626795150`);
+    if (html.includes('919342252587')) fail(`${page}: old WhatsApp number 919342252587 must not be used`);
+    // Footer credit links to BlueArk.
+    if (!/Designed &amp; developed by <a href="https:\/\/blueark\.co\.in\/"[^>]*>Blueark<\/a>/.test(html)) fail(`${page}: "Blueark" in the footer credit must link to https://blueark.co.in/`);
+    // Forms carry the agreed field set.
+    if (FORM_PAGES.includes(page)) for (const f of ['firstName', 'lastName', 'email', 'phone', 'jobRole', 'jobTitle', 'designation', 'company', 'country', 'message', 'consent']) if (!new RegExp(`name="${f}"`).test(html)) fail(`${page}: form field "${f}" is missing`);
   }
 }
+const js = read('assets/js/main.js');
+for (const c of ['enquiry@dragontechsolutions.com', '044 46054287', '97510 74995']) if (js.includes(c)) fail(`assets/js/main.js: contains company contact detail "${c}" (it is served on the landing pages)`);
 // The two CTAs on the landing page must lead to the other two pages.
 if (!/href="book-a-call\/"/.test(all['index.html'])) fail('index.html: "Book a Strategy Call" must link to book-a-call/');
 if (!/href="website\/"/.test(all['index.html'])) fail('index.html: "Explore the website" must link to website/');

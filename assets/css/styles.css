@@ -268,6 +268,7 @@ h3 { font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; }
 .field label { font-size: .88rem; font-weight: 600; color: var(--ink); }
 .field label span { color: var(--red-ink); }
 .field input:not([type="checkbox"]), .field select, .field textarea { width: 100%; min-height: 46px; padding: 11px 14px; background: #fff; color: var(--ink); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: 1rem; transition: border-color .15s, box-shadow .15s; }
+.field select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: calc(100% - 20px) 52%, calc(100% - 14px) 52%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 40px; cursor: pointer; }
 .field textarea { resize: vertical; min-height: 112px; }
 .field input::placeholder, .field textarea::placeholder { color: #756d63; }
 .field input:not([type="checkbox"]):focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(217, 53, 57, .28); }
@@ -320,6 +321,7 @@ h3 { font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; }
 .footer .privacy summary { color: #fff; }
 .footer .privacy a { color: #ffb3b5; }
 .footer__bar { margin-top: 32px; border-top: 1px solid rgba(255, 255, 255, .1); padding-block: 20px; font-size: .84rem; color: #b3aa9d; }
+.footer__bar a, .lp-foot a[href^="https://blueark"] { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 .footer__bar-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; }
 
 /* ----- Floating buttons ----- */
@@ -384,3 +386,5 @@ h3 { font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; }
 .book__intro { display: grid; gap: 22px; justify-items: start; }
 .book__channels { margin-top: 6px; }
 .lp--book .privacy { margin-top: 36px; }
+.book__subhead { font-family: var(--font-head); font-size: 1.15rem; font-weight: 650; letter-spacing: -0.01em; color: var(--ink); margin-top: 6px; }
+.book__subhead + .lp-points { margin-top: -8px; }

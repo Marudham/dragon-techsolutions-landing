@@ -28,9 +28,9 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 |---|---|---|---|
 | 1 | ISO 27001 | **Not on the landing/form pages** (it is still on the full website page) | Only on the live website ("ISO 27001:**2002**" – probably 2022). Re-add only if certification, year and body are confirmed |
 | 2 | Experience | "10+ years" | PDF: "Ten plus years" |
-| 3 | WhatsApp number | `+91 93422 52587` | From the live website's WhatsApp link. The PDF lists only `044 46054287 / 97510 74995` for calls |
+| 3 | WhatsApp number | `+91 96267 95150` (BlueArk's number, requested by the team) on all pages | The only contact option on the landing and form pages. The old number scraped from Dragon's site (93422 52587) is no longer used |
 | 4 | Bengaluru address | "…Naidu Layout, **Kankunte Cross**, Vasanthapura Main Road…" | PDF text reads "KnankunteCross" – spelling needs confirming |
-| 5 | Email shown to visitors | `enquiry@dragontechsolutions.com` | PDF. Enquiry-form leads are delivered to `contact@blueark.co.in` per the Blueark arrangement; confirm whether the client's mailbox should also be CC'd |
+| 5 | Email shown to visitors | Not shown on the landing/form pages any more; still on the full website page: `enquiry@dragontechsolutions.com` | PDF. Enquiry-form leads are delivered to `contact@blueark.co.in` per the Blueark arrangement; confirm whether the client's mailbox should also be CC'd |
 | 6 | Platform logos | Microsoft 365 and Google Workspace logos cut from the PDF (low resolution; the Microsoft one has a grey box around the text) | Replace with official logo files and confirm brand-usage rules |
 | 7 | Footer link | "Visit dragontechsolutions.com" | Keep, or remove to make the page fully stand-alone |
 | 8 | Footer credit | "Designed & developed by Blueark" | Remove/link as Blueark prefers |

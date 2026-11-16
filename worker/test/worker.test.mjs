@@ -12,7 +12,7 @@ const baseEnv = () => ({
   TURNSTILE_SECRET: 'secret',
 });
 const goodBody = (over = {}) => ({
-  name: 'Asha Rao', email: 'asha@example.test', phone: '+91 98765 43210', designation: 'IT Manager', company: 'Acme',
+  firstName: 'Asha', lastName: 'Rao', email: 'asha@example.test', phone: '+91 98765 43210', jobRole: 'IT', jobTitle: 'IT Manager', designation: 'IT Manager', company: 'Acme', country: 'India',
   message: 'We would like an audit of our network.', consent: true,
   website: '', turnstileToken: 'tok', ...over,
 });
@@ -97,7 +97,7 @@ test('server-side validation returns per-field errors', async (t) => {
   const res = await handleRequest(req({ turnstileToken: 'tok' }), baseEnv());
   assert.equal(res.status, 400);
   const data = await res.json();
-  for (const k of ['name', 'email', 'phone', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
+  for (const k of ['firstName', 'lastName', 'email', 'phone', 'jobRole', 'jobTitle', 'company', 'country', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
   assert.equal(calls.length, 0);
 });
 
@@ -167,7 +167,7 @@ test('KV rate limit: per-IP hourly cap and daily cap', async (t) => {
 });
 
 test('header injection: CR/LF stripped from single-line fields; HTML escaped in html body', () => {
-  const { values } = validate(goodBody({ name: 'Eve\r\nBcc: x@evil.test', company: '<img src=x onerror=alert(1)>' }));
+  const { values } = validate(goodBody({ firstName: 'Eve\r\nBcc: x@evil.test', company: '<img src=x onerror=alert(1)>' }));
   assert.ok(!/[\r\n]/.test(values.name));
   const msg = buildMessage(values, { receivedAt: 't', origin: ORIGIN }, baseEnv());
   assert.ok(!/[\r\n]/.test(msg.subject));
@@ -210,4 +210,12 @@ test('designation: optional, single line, shown in the mail', () => {
   assert.match(buildMessage(validate(goodBody()).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: IT Manager/);
   assert.deepEqual(validate(goodBody({ designation: undefined })).errors, {});
   assert.match(buildMessage(validate(goodBody({ designation: undefined })).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: —/);
+});
+
+test('new fields: name is built from first+last, job role/title/country/company are required and shown in the mail', () => {
+  const ok = validate(goodBody());
+  assert.equal(ok.values.name, 'Asha Rao');
+  const text = buildMessage(ok.values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text;
+  for (const row of ['Name: Asha Rao', 'Job role: IT', 'Job title: IT Manager', 'Company: Acme', 'Country: India']) assert.ok(text.includes(row), row);
+  for (const k of ['jobRole', 'jobTitle', 'company', 'country', 'firstName', 'lastName']) assert.ok(validate(goodBody({ [k]: '' })).errors[k], `${k} required`);
 });

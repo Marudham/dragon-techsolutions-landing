@@ -59,18 +59,28 @@ function json(body, status, origin) {
 export function validate(input) {
   const errors = {};
   const v = {
-    name: oneLine(input.name, 100),
+    firstName: oneLine(input.firstName, 60),
+    lastName: oneLine(input.lastName, 60),
     email: oneLine(input.email, 150),
     phone: oneLine(input.phone, 20),
+    jobRole: oneLine(input.jobRole, 80),
+    jobTitle: oneLine(input.jobTitle, 80),
     designation: oneLine(input.designation, 100),
     company: oneLine(input.company, 120),
+    country: oneLine(input.country, 60),
     message: clean(input.message, 2000),
     source: SOURCES.includes(oneLine(input.source, 20)) ? oneLine(input.source, 20) : 'book',
   };
-  if (v.name.length < 2) errors.name = 'Please enter your name.';
+  v.name = `${v.firstName} ${v.lastName}`.trim();
+  if (v.firstName.length < 1) errors.firstName = 'Please enter your first name.';
+  if (v.lastName.length < 1) errors.lastName = 'Please enter your last name.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) errors.email = 'Please enter a valid email address.';
   const digits = v.phone.replace(/\D/g, '');
   if (!/^[+\d][\d\s\-()]*$/.test(v.phone) || digits.length < 7 || digits.length > 15) errors.phone = 'Please enter a valid phone number.';
+  if (v.jobRole.length < 2) errors.jobRole = 'Please enter your job role.';
+  if (v.jobTitle.length < 2) errors.jobTitle = 'Please enter your job title.';
+  if (v.company.length < 2) errors.company = 'Please enter your company name.';
+  if (v.country.length < 2) errors.country = 'Please choose your country.';
   if (v.message.length < 10) errors.message = 'Please add a few more details (at least 10 characters).';
   if (input.consent !== true) errors.consent = 'Please tick the box to continue.';
   return { values: v, errors };
@@ -128,8 +138,11 @@ export function buildMessage(v, meta, env) {
     ['Name', v.name],
     ['Email', v.email],
     ['Phone', v.phone],
+    ['Job role', v.jobRole],
+    ['Job title', v.jobTitle],
     ['Designation', v.designation || '—'],
-    ['Company', v.company || '—'],
+    ['Company', v.company],
+    ['Country', v.country],
     ['Topic', topic],
   ];
   const text =
