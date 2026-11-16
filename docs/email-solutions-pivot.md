@@ -78,3 +78,13 @@ Decisions taken (change anything later):
 - Every form posts to the same Worker with a `source` key (`book` or `website`). The Worker maps it to a label (allow-list): `Email Solutions` or `Website enquiry`, shown in the mail subject/body, so the team can tell campaign leads from general website enquiries.
 - Page copy is still a draft for the team to approve (see `CONTENT-REVIEW.md`); the full website's items are in `CONTENT-REVIEW-website.md`.
 - Landing and form pages use one shared stylesheet and script with the website (`assets/`), so a design change is made once.
+
+---
+
+## Change requests log (after the three-page restructure)
+
+| Date | Request (from the team chat) | Status |
+|---|---|---|
+| 16 Nov 2026 | "Add designation in form" | Done on both forms (`/book-a-call/` and `/website/`). Optional field, sent to the Worker, shown as a "Designation" row in the mail. To make it required: add `required` and an error line to the input, plus a rule in `assets/js/main.js` and `validate()` in `worker/src/index.js` |
+| 16 Nov 2026 | "Should we keep the phone 044 46054287 or remove it?" – answer "No issue" | Kept everywhere |
+| 16 Nov 2026 | "Is there any possible to change colour" – "yes we can, which color?" – "That should be like human creation" | **Waiting for a decision.** "Human creation" is not a colour; see the options proposed in the review chat. Colours are CSS variables in `assets/css/styles.css` (`:root`), but several effects use hard-coded colours too, so a full re-theme needs a short pass |

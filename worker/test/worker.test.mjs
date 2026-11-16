@@ -12,7 +12,7 @@ const baseEnv = () => ({
   TURNSTILE_SECRET: 'secret',
 });
 const goodBody = (over = {}) => ({
-  name: 'Asha Rao', email: 'asha@example.test', phone: '+91 98765 43210', company: 'Acme',
+  name: 'Asha Rao', email: 'asha@example.test', phone: '+91 98765 43210', designation: 'IT Manager', company: 'Acme',
   message: 'We would like an audit of our network.', consent: true,
   website: '', turnstileToken: 'tok', ...over,
 });
@@ -201,4 +201,13 @@ test('source: website enquiries are labelled "Website enquiry"; unknown sources 
   const evil = msg({ source: 'Hacked\r\nBcc: x@evil.test' });
   assert.match(evil.subject, /Email Solutions/);
   assert.ok(!/Hacked/.test(evil.subject + evil.text));
+});
+
+test('designation: optional, single line, shown in the mail', () => {
+  const ok = validate(goodBody({ designation: 'IT Manager\r\nBcc: x@evil.test' }));
+  assert.deepEqual(ok.errors, {});
+  assert.ok(!/[\r\n]/.test(ok.values.designation));
+  assert.match(buildMessage(validate(goodBody()).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: IT Manager/);
+  assert.deepEqual(validate(goodBody({ designation: undefined })).errors, {});
+  assert.match(buildMessage(validate(goodBody({ designation: undefined })).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: —/);
 });

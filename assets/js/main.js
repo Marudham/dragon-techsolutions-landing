@@ -203,6 +203,7 @@
       name: form.elements.name.value.trim(),
       email: form.elements.email.value.trim(),
       phone: form.elements.phone.value.trim(),
+      designation: form.elements.designation ? form.elements.designation.value.trim() : '',
       company: form.elements.company.value.trim(),
       message: form.elements.message.value.trim(),
       consent: form.elements.consent.checked,

@@ -62,6 +62,7 @@ export function validate(input) {
     name: oneLine(input.name, 100),
     email: oneLine(input.email, 150),
     phone: oneLine(input.phone, 20),
+    designation: oneLine(input.designation, 100),
     company: oneLine(input.company, 120),
     message: clean(input.message, 2000),
     source: SOURCES.includes(oneLine(input.source, 20)) ? oneLine(input.source, 20) : 'book',
@@ -127,6 +128,7 @@ export function buildMessage(v, meta, env) {
     ['Name', v.name],
     ['Email', v.email],
     ['Phone', v.phone],
+    ['Designation', v.designation || '—'],
     ['Company', v.company || '—'],
     ['Topic', topic],
   ];
