@@ -71,7 +71,7 @@ After seeing the first email-only version the team clarified that they want **th
 |---|---|---|
 | Landing | `/` | One short screen: logo, badge, headline, intro, six tick-points, **Book a Strategy Call** and **Explore the website** buttons, platform logos, small footer |
 | Form page | `/book-a-call/` | Single page with the enquiry form only (intro + what to expect on the left, boxed form on the right), reached from "Book a Strategy Call" |
-| Full website | `/website/` | The first-built full Dragon TechSolutions website (what was tagged `v1-full-profile`), reached from "Explore the website" |
+| ~~Full website~~ | ~~`/website/`~~ | **Replaced on 16 Nov:** "Explore the website" now links to the client's real site, https://dragontechsolutions.com/ (see the log below) |
 
 Decisions taken (change anything later):
 - The full website keeps its original content and design; its form lost the service selector too (same rule for every form). Its "Enquire" buttons simply go to the contact section.
@@ -97,3 +97,5 @@ Notes for the team: Job role, Job title and Designation overlap; Designation is 
 
 | 16 Nov 2026 | "Make the phone no non mandatory" | Done on both forms: no asterisk, not required. If filled in it must still look like a phone number; blank is shown as "—" in the mail. Worker and site must both be deployed |
 | 16 Nov 2026 | Live form showed "could not send your enquiry" | Cause: `MAIL_FROM` in `worker/wrangler.toml` was missing its closing `>`, so Resend rejected every send. Fixed; the Worker now also logs Resend's error reason and flags a malformed `MAIL_FROM` clearly |
+| 16 Nov 2026 | "Keep job role and job title fields and remove the designation field" | Done on the form page (and the archived website copy). Fields are now: First name, Last name, Business email, Phone (optional), Job role, Job title, Company, Country, How can we help?, consent. Designation is removed from the page, script, Worker and mail |
+| 16 Nov 2026 | "Explore our website button: give their website link. If they give permission and payment, we can modify that as well" | "Explore the website" now opens **https://dragontechsolutions.com/** in a new tab. The copy of their site that we built (`website/`) is no longer deployed or in the sitemap; it stays in the repo (and git tag `v1-full-profile`) in case they approve and pay for changes to their own site. To bring it back: add `website` to the `cp -r` line in `.github/workflows/deploy.yml` and the sitemap |

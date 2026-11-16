@@ -210,7 +210,6 @@
       phone: f.phone.value.trim(),
       jobRole: f.jobRole.value.trim(),
       jobTitle: f.jobTitle.value.trim(),
-      designation: f.designation.value.trim(),
       company: f.company.value.trim(),
       country: f.country.value,
       message: f.message.value.trim(),

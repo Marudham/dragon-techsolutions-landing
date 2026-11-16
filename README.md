@@ -7,7 +7,7 @@ It is a small campaign site focused on **business email solutions** (Microsoft 3
 |---|---|---|
 | Landing | `/` | One short screen with two buttons |
 | Form page | `/book-a-call/` | "Book a Strategy Call": the enquiry form only |
-| Full website | `/website/` | "Explore the website": the complete Dragon TechSolutions site |
+| _(archived)_ | `website/` | Copy of Dragon's full site. **Not deployed**; "Explore the website" links to https://dragontechsolutions.com/ instead |
 
 See [docs/email-solutions-pivot.md](docs/email-solutions-pivot.md).
 Static HTML/CSS/JS hosted on **GitHub Pages**; the enquiry form posts to a small **Cloudflare Worker** that e-mails the lead.

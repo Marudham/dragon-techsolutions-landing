@@ -18,8 +18,8 @@ generic, verifiable facts about those platforms. Every claim should be confirmed
 | E3 | Why it matters | Free/shared mailboxes, phishing/spam, passwords-only sign-in, no admin control | The "insecure email" angle from the voice note was unclear – is this the message the team wants? |
 | E4 | Benefits | Own-domain addresses, built-in spam/phishing filtering, multi-factor sign-in, admin console, any device, calendar/meetings/files | Wording and any extra benefits (migration, backup, archiving, compliance) |
 | E5 | How it works | 1 Strategy call → 2 Plan and move (migration) → 3 Ongoing support | Is mailbox migration part of the offer? Steps and wording |
-| E6 | Landing | "Book a Strategy Call" opens the form page; "Explore the website" opens the full Dragon website page (`/website/`) | Confirmed by the team on 16 Nov (see pivot notes) |
-| E7 | Form page | Fields: name, work email, phone, company (optional), message, consent. No service selector | Any extra field wanted (e.g. number of mailboxes)? |
+| E6 | Landing | "Book a Strategy Call" opens the form page; "Explore the website" opens https://dragontechsolutions.com/ in a new tab | Confirmed by the team on 16 Nov (see pivot notes) |
+| E7 | Form page | Fields: first/last name, business email, phone (optional), job role, job title, company, country, message, consent. No service selector, no designation | Any extra field wanted (e.g. number of mailboxes)? |
 | E8 | Email to the team | Subject/body tagged "Email Solutions" | Preferred subject line / CC |
 
 ## Company facts (carried over)

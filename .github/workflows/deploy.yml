@@ -62,7 +62,7 @@ jobs:
           SITE_URL="${SITE_URL%/}"
           BASE_PATH=$(echo "$SITE_URL" | sed -E 's|^https?://[^/]+||')   # "" on a custom domain, "/repo" on github.io project pages
           mkdir _site
-          cp -r index.html 404.html robots.txt sitemap.xml assets website book-a-call _site/
+          cp -r index.html 404.html robots.txt sitemap.xml assets book-a-call _site/   # website/ (copy of the client's site) is kept in the repo but not deployed
           [ -f CNAME ] && cp CNAME _site/ || true
           touch _site/.nojekyll
           find _site -name '*.html' ! -name 404.html -print0 | xargs -0 sed -i.bak "s|__SITE_URL__|${SITE_URL}|g"

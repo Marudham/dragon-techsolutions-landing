@@ -12,7 +12,7 @@ const baseEnv = () => ({
   TURNSTILE_SECRET: 'secret',
 });
 const goodBody = (over = {}) => ({
-  firstName: 'Asha', lastName: 'Rao', email: 'asha@example.test', phone: '+91 98765 43210', jobRole: 'IT', jobTitle: 'IT Manager', designation: 'IT Manager', company: 'Acme', country: 'India',
+  firstName: 'Asha', lastName: 'Rao', email: 'asha@example.test', phone: '+91 98765 43210', jobRole: 'IT', jobTitle: 'IT Manager', company: 'Acme', country: 'India',
   message: 'We would like an audit of our network.', consent: true,
   website: '', turnstileToken: 'tok', ...over,
 });
@@ -203,14 +203,6 @@ test('source: website enquiries are labelled "Website enquiry"; unknown sources 
   assert.ok(!/Hacked/.test(evil.subject + evil.text));
 });
 
-test('designation: optional, single line, shown in the mail', () => {
-  const ok = validate(goodBody({ designation: 'IT Manager\r\nBcc: x@evil.test' }));
-  assert.deepEqual(ok.errors, {});
-  assert.ok(!/[\r\n]/.test(ok.values.designation));
-  assert.match(buildMessage(validate(goodBody()).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: IT Manager/);
-  assert.deepEqual(validate(goodBody({ designation: undefined })).errors, {});
-  assert.match(buildMessage(validate(goodBody({ designation: undefined })).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text, /Designation: —/);
-});
 
 test('new fields: name is built from first+last, job role/title/country/company are required and shown in the mail', () => {
   const ok = validate(goodBody());
@@ -235,4 +227,11 @@ test('a malformed MAIL_FROM (missing ">") is reported clearly and no mail is att
   const res = await handleRequest(req(goodBody()), env);
   assert.equal(res.status, 502);
   assert.equal(calls.filter((c) => String(c.url).includes('resend')).length, 0);
+});
+
+test('designation is gone: it is ignored if sent and never appears in the mail', () => {
+  const { values, errors } = validate(goodBody({ designation: 'Head of IT' }));
+  assert.deepEqual(errors, {});
+  assert.equal('designation' in values, false);
+  assert.ok(!/Designation/.test(buildMessage(values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text));
 });

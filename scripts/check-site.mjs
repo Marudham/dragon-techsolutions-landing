@@ -72,14 +72,15 @@ for (const page of PAGES) {
     // Footer credit links to BlueArk.
     if (!/Designed &amp; developed by <a href="https:\/\/blueark\.co\.in\/"[^>]*>Blueark<\/a>/.test(html)) fail(`${page}: "Blueark" in the footer credit must link to https://blueark.co.in/`);
     // Forms carry the agreed field set.
-    if (FORM_PAGES.includes(page)) for (const f of ['firstName', 'lastName', 'email', 'phone', 'jobRole', 'jobTitle', 'designation', 'company', 'country', 'message', 'consent']) if (!new RegExp(`name="${f}"`).test(html)) fail(`${page}: form field "${f}" is missing`);
+    if (FORM_PAGES.includes(page) && /name="designation"/.test(html)) fail(`${page}: the Designation field was removed (team request)`);
+    if (FORM_PAGES.includes(page)) for (const f of ['firstName', 'lastName', 'email', 'phone', 'jobRole', 'jobTitle', 'company', 'country', 'message', 'consent']) if (!new RegExp(`name="${f}"`).test(html)) fail(`${page}: form field "${f}" is missing`);
   }
 }
 const js = read('assets/js/main.js');
 for (const c of ['enquiry@dragontechsolutions.com', '044 46054287', '97510 74995']) if (js.includes(c)) fail(`assets/js/main.js: contains company contact detail "${c}" (it is served on the landing pages)`);
-// The two CTAs on the landing page must lead to the other two pages.
+// The two CTAs on the landing page: the form page, and the client's real website.
 if (!/href="book-a-call\/"/.test(all['index.html'])) fail('index.html: "Book a Strategy Call" must link to book-a-call/');
-if (!/href="website\/"/.test(all['index.html'])) fail('index.html: "Explore the website" must link to website/');
+if (!/href="https:\/\/dragontechsolutions\.com\/" target="_blank" rel="noopener noreferrer"/.test(all['index.html'])) fail('index.html: "Explore the website" must open https://dragontechsolutions.com/ in a new tab');
 const ids = new Set(), symbols = new Set(); // for the summary line only
 
 // 8. No secrets in the repo (excluding node_modules/.git)
