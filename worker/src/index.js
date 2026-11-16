@@ -76,7 +76,8 @@ export function validate(input) {
   if (v.lastName.length < 1) errors.lastName = 'Please enter your last name.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) errors.email = 'Please enter a valid email address.';
   const digits = v.phone.replace(/\D/g, '');
-  if (!/^[+\d][\d\s\-()]*$/.test(v.phone) || digits.length < 7 || digits.length > 15) errors.phone = 'Please enter a valid phone number.';
+  // Phone is optional; when given it must look like a phone number.
+  if (v.phone && (!/^[+\d][\d\s\-()]*$/.test(v.phone) || digits.length < 7 || digits.length > 15)) errors.phone = 'Please enter a valid phone number.';
   if (v.jobRole.length < 2) errors.jobRole = 'Please enter your job role.';
   if (v.jobTitle.length < 2) errors.jobTitle = 'Please enter your job title.';
   if (v.company.length < 2) errors.company = 'Please enter your company name.';
@@ -137,7 +138,7 @@ export function buildMessage(v, meta, env) {
   const rows = [
     ['Name', v.name],
     ['Email', v.email],
-    ['Phone', v.phone],
+    ['Phone', v.phone || '—'],
     ['Job role', v.jobRole],
     ['Job title', v.jobTitle],
     ['Designation', v.designation || '—'],
@@ -171,13 +172,19 @@ export function buildMessage(v, meta, env) {
 
 async function sendMail(message, env) {
   const provider = env.MAIL_PROVIDER || 'resend';
+  if (!/^(?:[^<>]+<)?[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+>?$/.test(String(message.from || '')) || /<[^>]*$/.test(String(message.from || ''))) throw new Error('MAIL_FROM is malformed (check the closing > in wrangler.toml)');
   if (provider === 'resend') {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...message, cc: message.cc.length ? message.cc : undefined }),
     });
-    if (!res.ok) throw new Error(`resend ${res.status}`);
+    if (!res.ok) {
+      // Resend's error body names the problem (e.g. unverified domain, bad from address); it holds no visitor data.
+      let detail = '';
+      try { detail = (await res.text()).slice(0, 300); } catch { /* ignore */ }
+      throw new Error(`resend ${res.status} ${detail}`);
+    }
     return;
   }
   if (provider === 'webhook') {

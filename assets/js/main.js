@@ -89,7 +89,7 @@
       return '';
     },
     phone: function (v) {
-      if (!v) return 'Please enter your phone number.';
+      if (!v) return '';   // phone is optional; validate only when provided
       var digits = v.replace(/\D/g, '');
       if (!/^[+\d][\d\s\-()]*$/.test(v) || digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number.';
       return '';

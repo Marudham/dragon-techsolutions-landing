@@ -97,7 +97,7 @@ test('server-side validation returns per-field errors', async (t) => {
   const res = await handleRequest(req({ turnstileToken: 'tok' }), baseEnv());
   assert.equal(res.status, 400);
   const data = await res.json();
-  for (const k of ['firstName', 'lastName', 'email', 'phone', 'jobRole', 'jobTitle', 'company', 'country', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
+  for (const k of ['firstName', 'lastName', 'email', 'jobRole', 'jobTitle', 'company', 'country', 'message', 'consent']) assert.ok(data.errors[k], `error for ${k}`);
   assert.equal(calls.length, 0);
 });
 
@@ -218,4 +218,21 @@ test('new fields: name is built from first+last, job role/title/country/company 
   const text = buildMessage(ok.values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text;
   for (const row of ['Name: Asha Rao', 'Job role: IT', 'Job title: IT Manager', 'Company: Acme', 'Country: India']) assert.ok(text.includes(row), row);
   for (const k of ['jobRole', 'jobTitle', 'company', 'country', 'firstName', 'lastName']) assert.ok(validate(goodBody({ [k]: '' })).errors[k], `${k} required`);
+});
+
+test('phone is optional: blank is accepted and shown as a dash, but a filled-in value must still be valid', () => {
+  assert.deepEqual(validate(goodBody({ phone: '' })).errors, {});
+  assert.deepEqual(validate(goodBody({ phone: undefined })).errors, {});
+  assert.ok(validate(goodBody({ phone: 'abc' })).errors.phone);
+  assert.ok(validate(goodBody({ phone: '12345' })).errors.phone);
+  const text = buildMessage(validate(goodBody({ phone: '' })).values, { receivedAt: 't', origin: ORIGIN }, baseEnv()).text;
+  assert.match(text, /Phone: —/);
+});
+
+test('a malformed MAIL_FROM (missing ">") is reported clearly and no mail is attempted', async (t) => {
+  const calls = mockFetch(t);
+  const env = { ...baseEnv(), MAIL_FROM: 'Dragon TechSolutions Website <no-reply@example.test' };
+  const res = await handleRequest(req(goodBody()), env);
+  assert.equal(res.status, 502);
+  assert.equal(calls.filter((c) => String(c.url).includes('resend')).length, 0);
 });

@@ -11,7 +11,7 @@ ALLOWED_ORIGINS = "https://marudham.github.io"
 MAIL_TO = "contact@blueark.co.in"
 # MAIL_CC = ""            # e.g. the client's enquiry mailbox, if agreed
 # Sender must be on a domain verified with the mail provider.
-MAIL_FROM = "Dragon TechSolutions Website <no-reply@blueark.co.in"
+MAIL_FROM = "Dragon TechSolutions Website <no-reply@blueark.co.in>"
 MAIL_PROVIDER = "resend"   # resend | webhook
 # ENQUIRY_TOPIC = "Email Solutions"   # optional: label shown in the subject/body of every enquiry mail (default shown)
 TURNSTILE_HOSTNAMES = "marudham.github.io"

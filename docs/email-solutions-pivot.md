@@ -94,3 +94,6 @@ Decisions taken (change anything later):
 | 16 Nov 2026 | Footer: make "Blueark" a link to https://blueark.co.in/ | Done on all three pages (opens in a new tab) |
 
 Notes for the team: Job role, Job title and Designation overlap; Designation is the only optional one. If it should be dropped or the other two merged, it is a quick change. Form submissions still go by email to `contact@blueark.co.in` (WhatsApp is only a chat link, not a delivery channel).
+
+| 16 Nov 2026 | "Make the phone no non mandatory" | Done on both forms: no asterisk, not required. If filled in it must still look like a phone number; blank is shown as "—" in the mail. Worker and site must both be deployed |
+| 16 Nov 2026 | Live form showed "could not send your enquiry" | Cause: `MAIL_FROM` in `worker/wrangler.toml` was missing its closing `>`, so Resend rejected every send. Fixed; the Worker now also logs Resend's error reason and flags a malformed `MAIL_FROM` clearly |
